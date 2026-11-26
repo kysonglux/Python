@@ -2,6 +2,7 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.ticker import FuncFormatter
 
 from load_csv import load
 
@@ -30,16 +31,20 @@ def plot_projection(income: pd.DataFrame, life: pd.DataFrame) -> None:
     merged = merged.dropna(subset=["income", "life_expectancy"])
     plt.scatter(merged["income"], merged["life_expectancy"], alpha=0.7)
     plt.xscale("log")
-    plt.title(f"Life expectancy vs income in {YEAR}")
-    plt.xlabel("Gross domestic product per person (US$)")
-    plt.ylabel("Life expectancy (years)")
+    plt.gca().xaxis.set_major_formatter(
+        FuncFormatter(lambda value, _: f"{value / 1_000:g}k")
+    )
+    plt.title(f"{YEAR}")
+    plt.xlabel("Gross domestic product")
+    plt.ylabel("Life expectancy")
     plt.tight_layout()
     plt.show()
+    plt.savefig(Path(__file__).resolve().parent / "test.png")
 
 
 def main() -> None:
     """Load both datasets and display their projection for 1900."""
-    base = Path(__file__).resolve().parent.parent
+    base = Path(__file__).resolve().parent
     income = load(str(base / "income_per_person_gdppercapita_ppp_inflation_adjusted.csv"))
     life = load(str(base / "life_expectancy_years.csv"))
     if income is not None and life is not None:

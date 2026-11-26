@@ -6,7 +6,7 @@ import pandas as pd
 from load_csv import load
 
 
-COUNTRY = "South Korea"
+COUNTRY = "Luxembourg"
 
 
 def plot_life_expectancy(dataset: pd.DataFrame, country: str) -> None:
@@ -17,17 +17,17 @@ def plot_life_expectancy(dataset: pd.DataFrame, country: str) -> None:
     years = [int(column) for column in dataset.columns[1:]]
     values = country_data.iloc[0, 1:].astype(float)
     plt.plot(years, values, label=country)
-    plt.title(f"Life expectancy in {country}")
+    plt.title(f"{country} Life expectancy Projections")
     plt.xlabel("Year")
-    plt.ylabel("Life expectancy (years)")
-    plt.legend()
+    plt.ylabel("Life expectancy")
     plt.tight_layout()
+    plt.savefig(Path(__file__).resolve().parent / "test.png")
     plt.show()
 
 
 def main() -> None:
     """Load the life expectancy dataset and plot the campus country."""
-    path = Path(__file__).resolve().parent.parent / "life_expectancy_years.csv"
+    path = Path(__file__).resolve().parent / "life_expectancy_years.csv"
     dataset = load(str(path))
     if dataset is not None:
         try:

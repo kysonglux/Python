@@ -2,11 +2,12 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.ticker import FuncFormatter
 
 from load_csv import load
 
 
-COUNTRY = "South Korea"
+COUNTRY = "Luxembourg"
 COMPARISON_COUNTRY = "France"
 
 
@@ -25,13 +26,17 @@ def plot_population(
     for _, row in country_data.iterrows():
         values = row.iloc[1:].map(_parse_value)
         plt.plot(years, values, label=row["country"])
-    plt.title(f"Population: {country} vs {comparison_country}")
+    plt.title(f"Population Projections")
     plt.xlabel("Year")
     plt.ylabel("Population")
+    plt.gca().yaxis.set_major_formatter(
+        FuncFormatter(lambda value, _: f"{value / 1_000_000:g}M")
+    )
     plt.xlim(1800, 2050)
-    plt.legend()
+    plt.legend(loc="upper right")
     plt.tight_layout()
     plt.show()
+    plt.savefig("test.png")
 
 
 def _parse_value(value: str) -> float:
